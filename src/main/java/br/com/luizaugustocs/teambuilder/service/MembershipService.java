@@ -48,7 +48,7 @@ public class MembershipService {
 
         return this.membershipRepository.findById(id)
                 .orElseThrow(() -> {
-                    var formattedMessage = String.format("The user %s is not a member of the team %s.", membershipDTO.getUserId(), membershipDTO.getTeamId());
+                    var formattedMessage = String.format("The user [%s] is not a member of the team [%s].", membershipDTO.getUserId(), membershipDTO.getTeamId());
                     return new NotFoundException(formattedMessage);
                 });
     }

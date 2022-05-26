@@ -51,8 +51,8 @@ public class RoleController {
         return ResponseEntity.created(uri).body(response);
     }
 
-    @GetMapping("/by-membership")
-    public ResponseEntity<RoleDTO> findByMembership(MembershipDTO membershipDTO) {
+    @GetMapping(value = "/by-membership")
+    public ResponseEntity<RoleDTO> findByMembership(@Valid MembershipDTO membershipDTO) {
         Membership membership = this.membershipService.findByDTO(membershipDTO);
         RoleDTO role = RoleDTO.from(membership.getRole());
         return ResponseEntity.ok(role);

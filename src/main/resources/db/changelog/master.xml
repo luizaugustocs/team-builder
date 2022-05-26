@@ -2,10 +2,6 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <property name="random_uuid" value="gen_random_uuid()" dbms="postgresql"/>
-    <property name="random_uuid" value="random_uuid()" dbms="h2"/>
-
-
     <changeSet id="create-table-role" author="luizaugustocs">
         <preConditions>
             <not>
@@ -84,17 +80,17 @@
             <tableExists tableName="role"/>
         </preConditions>
         <insert tableName="role">
-            <column name="id" valueComputed="${random_uuid}"/>
+            <column name="id" value="e870f742-2627-426e-8287-5bbf391ea9e9"/>
             <column name="name" value="Developer"/>
             <column name="is_default" value="true"/>
         </insert>
         <insert tableName="role">
-            <column name="id" valueComputed="${random_uuid}"/>
+            <column name="id" value="d5ddba22-54b9-4a16-acfd-84c1f5370567"/>
             <column name="name" value="Product Owner"/>
             <column name="is_default" value="false"/>
         </insert>
         <insert tableName="role">
-            <column name="id" valueComputed="${random_uuid}"/>
+            <column name="id" value="11e30283-a92a-42fb-add8-b6c9eaf85e29"/>
             <column name="name" value="Tester"/>
             <column name="is_default" value="false"/>
         </insert>
