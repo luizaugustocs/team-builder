@@ -1,0 +1,20 @@
+spring:
+  jpa:
+    showSql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format_sql: true
+        show_sql: true
+        id.new_generator_mappings: false
+        hibernate.id.optimizer.pooled.preferred: none
+        jdbc.lob.non_contextual_creation: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:postgresql://localhost:5432/teambuild
+    username: teambuild
+    password: teambuildpass
+  liquibase:
+    contexts: default
+    change-log: classpath:db/changelog/master.xml

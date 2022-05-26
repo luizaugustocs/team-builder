@@ -17,7 +17,7 @@ public class ErrorDescription {
 
     public ErrorDescription(HttpStatus status, String message) {
         this.time = LocalDateTime.now();
-        this.path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+        this.path = ServletUriComponentsBuilder.fromCurrentRequest().build().getPath();
         this.status = status;
         this.message = message;
     }

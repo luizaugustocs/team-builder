@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/roles")
 public class RoleController {
 
     private final RoleService roleService;
@@ -73,7 +73,7 @@ public class RoleController {
     public ResponseEntity<Page<MembershipDTO>> getMembershipRoles(@PathVariable UUID roleId, Pageable pageable) {
         Role role = this.roleService.findById(roleId);
         Page<Membership> result = this.membershipService.findByRole(role, pageable);
-        result.map(MembershipDTO::from);
-        throw new RuntimeException("not implemented yet");
+        Page<MembershipDTO> response = result.map(MembershipDTO::from);
+        return ResponseEntity.ok(response);
     }
 }

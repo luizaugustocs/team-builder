@@ -6,6 +6,8 @@ import br.com.luizaugustocs.teambuilder.domain.Role;
 import br.com.luizaugustocs.teambuilder.dto.MembershipDTO;
 import br.com.luizaugustocs.teambuilder.exception.NotFoundException;
 import br.com.luizaugustocs.teambuilder.repository.MembershipRepository;
+import br.com.luizaugustocs.teambuilder.repository.TeamRepository;
+import br.com.luizaugustocs.teambuilder.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,13 @@ import org.springframework.stereotype.Service;
 public class MembershipService {
 
     private final MembershipRepository membershipRepository;
+    private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
 
-    public MembershipService(MembershipRepository membershipRepository) {
+    public MembershipService(MembershipRepository membershipRepository, TeamRepository teamRepository, UserRepository userRepository) {
         this.membershipRepository = membershipRepository;
+        this.teamRepository = teamRepository;
+        this.userRepository = userRepository;
     }
 
     public Membership assignRole(Role role, MembershipDTO membershipDTO) {
@@ -28,6 +34,14 @@ public class MembershipService {
     }
 
     public Membership findByDTO(MembershipDTO membershipDTO) {
+
+        if (!this.teamRepository.existsById(membershipDTO.getTeamId())) {
+            throw new NotFoundException("team", membershipDTO.getTeamId());
+        }
+        if (!this.userRepository.existsById(membershipDTO.getUserId())) {
+            throw new NotFoundException("user", membershipDTO.getUserId());
+        }
+
         MembershipId id = new MembershipId();
         id.setTeamId(membershipDTO.getTeamId());
         id.setUserId(membershipDTO.getUserId());
