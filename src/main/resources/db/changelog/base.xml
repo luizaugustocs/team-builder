@@ -1,0 +1,58 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create-table-users" author="luizaugustocs">
+        <preConditions>
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column name="id" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
+            </column>
+            <column name="first_name" type="varchar(255)"/>
+            <column name="last_name" type="varchar(255)"/>
+            <column name="display_name" type="varchar(255)"/>
+            <column name="avatar_url" type="text"/>
+            <column name="location" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-table-team" author="luizaugustocs">
+        <preConditions>
+            <not>
+                <tableExists tableName="team"/>
+            </not>
+        </preConditions>
+        <createTable tableName="team">
+            <column name="id" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_team"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="lead_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_lead_team" referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="create-table-membership" author="luizaugustocs">
+        <preConditions>
+            <not>
+                <tableExists tableName="membership"/>
+            </not>
+        </preConditions>
+        <createTable tableName="membership">
+            <column name="team_id" type="uuid">
+                <constraints nullable="false"  foreignKeyName="fk_member_team" referencedTableName="team"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false"  foreignKeyName="fk_member_user" referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="membership" columnNames="team_id, user_id" constraintName="pk_membership"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,65 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create-table-role" author="luizaugustocs">
+        <preConditions>
+            <not>
+                <tableExists tableName="role"/>
+            </not>
+        </preConditions>
+        <createTable tableName="role">
+            <column name="id" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="is_default" type="boolean"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-column-role-membership" author="luizaugustocs">
+        <preConditions>
+            <tableExists tableName="role"/>
+            <tableExists tableName="membership"/>
+            <not>
+                <columnExists tableName="membership" columnName="role_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="membership">
+            <column name="role_id" type="uuid">
+                <constraints  foreignKeyName="fk_member_role" referencedTableName="role"
+                              referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="insert-default-roles" author="luizaugustocs">
+        <preConditions>
+            <tableExists tableName="role"/>
+        </preConditions>
+        <insert tableName="role">
+            <column name="id" value="e870f742-2627-426e-8287-5bbf391ea9e9"/>
+            <column name="name" value="Developer"/>
+            <column name="is_default" value="true"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" value="d5ddba22-54b9-4a16-acfd-84c1f5370567"/>
+            <column name="name" value="Product Owner"/>
+            <column name="is_default" value="false"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" value="11e30283-a92a-42fb-add8-b6c9eaf85e29"/>
+            <column name="name" value="Tester"/>
+            <column name="is_default" value="false"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="set-default-role-to-existing-memberships" author="luizaugustocs">
+        <preConditions>
+            <columnExists tableName="membership" columnName="role_id"/>
+        </preConditions>
+        <update tableName="membership">
+            <column name="role_id" value="e870f742-2627-426e-8287-5bbf391ea9e9"/>
+        </update>
+    </changeSet>
+</databaseChangeLog>
