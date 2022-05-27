@@ -15,12 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/roles")
+@Transactional
 public class RoleController {
 
     private final RoleService roleService;
@@ -75,5 +77,11 @@ public class RoleController {
         Page<Membership> result = this.membershipService.findByRole(role, pageable);
         Page<MembershipDTO> response = result.map(MembershipDTO::from);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{roleId}")
+    public ResponseEntity<Void> deleteRole(@PathVariable UUID roleId) {
+        this.roleService.delete(roleId);
+        return ResponseEntity.noContent().build();
     }
 }

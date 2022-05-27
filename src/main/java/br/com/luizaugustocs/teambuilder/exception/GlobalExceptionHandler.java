@@ -43,4 +43,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorDescription(HttpStatus.BAD_REQUEST,message));
     }
+    @ExceptionHandler({BadRequestException.class})
+    public final ResponseEntity<ErrorDescription> handleBadRequestException(BadRequestException ex) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorDescription(HttpStatus.BAD_REQUEST,ex.getMessage()));
+    }
 }

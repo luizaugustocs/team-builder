@@ -19,3 +19,14 @@
 - An endpoint to query all the teams that a user is a team lead
 - An endpoint to query the teams by name
 - An endpoint to query the users by name, display name or location
+
+# What happens if the data is deleted?
+
+- If a role is deleted?
+  - The default role cannot be deleted 
+  - All memberships associated with role beig deleted are associated to the default role and then the role is deleted
+- If a user is deleted?
+  - If the user is the lead of a team it cannot be deleted
+  - All memberships associated with that user are deleted
+- If a team is deleted?
+  - All memberships associated with that team are deleted

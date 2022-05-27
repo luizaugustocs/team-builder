@@ -18,9 +18,11 @@ public class Team {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
     private String name;
+
     @ManyToOne
     @JoinColumn(name="lead_id")
     private User lead;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "team")
     private Set<Membership> members;
 

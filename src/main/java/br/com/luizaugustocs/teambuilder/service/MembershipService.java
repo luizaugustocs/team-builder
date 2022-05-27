@@ -26,8 +26,10 @@ public class MembershipService {
     }
 
     public Membership assignRole(Role role, MembershipDTO membershipDTO) {
-
         Membership membership = this.findByDTO(membershipDTO);
+        return this.assignRole(role, membership);
+    }
+    public Membership assignRole(Role role, Membership membership) {
         membership.setRole(role);
         return this.membershipRepository.save(membership);
 

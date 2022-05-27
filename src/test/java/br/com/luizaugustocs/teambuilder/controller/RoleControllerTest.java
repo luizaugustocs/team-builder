@@ -1,20 +1,16 @@
 package br.com.luizaugustocs.teambuilder.controller;
 
+import br.com.luizaugustocs.teambuilder.ControllerIntegrationTest;
 import br.com.luizaugustocs.teambuilder.dto.MembershipDTO;
 import br.com.luizaugustocs.teambuilder.dto.NewRoleDTO;
 import br.com.luizaugustocs.teambuilder.dto.RoleDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.transaction.Transactional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,12 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@AutoConfigureMockMvc
-@Transactional
-@Rollback
-@Sql(scripts = "classpath:sql/seed.sql")
+@ControllerIntegrationTest
 public class RoleControllerTest {
 
     @Autowired
@@ -135,6 +126,7 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$.status", equalTo("NOT_FOUND")))
         ;
     }
+
     @Test
     public void findOne_invalidUUID() throws Exception {
         mockMvc.perform(get("/roles/abcde")
@@ -174,7 +166,7 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$.status", equalTo("BAD_REQUEST")))
                 .andExpect(jsonPath("$.violations.[*]", hasSize(2)))
                 .andExpect(jsonPath("$.violations.[*]", containsInAnyOrder("Error while parsing field [teamId]: Team id is required",
-                        "Error while parsing field [userId]: User id is required") ))
+                        "Error while parsing field [userId]: User id is required")))
         ;
 
     }
@@ -286,9 +278,9 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$.message", equalTo("Error while parsing the parameters.")))
                 .andExpect(jsonPath("$.path", equalTo("/roles/by-membership")))
                 .andExpect(jsonPath("$.status", equalTo("BAD_REQUEST")))
-                .andExpect(jsonPath("$.violations.[*]", hasSize(2) ))
+                .andExpect(jsonPath("$.violations.[*]", hasSize(2)))
                 .andExpect(jsonPath("$.violations.[*]", containsInAnyOrder("Error while parsing field [teamId]: Team id is required",
-                        "Error while parsing field [userId]: User id is required") ))
+                        "Error while parsing field [userId]: User id is required")))
         ;
     }
 
@@ -296,8 +288,8 @@ public class RoleControllerTest {
     public void findByMembership_teamNotFound() throws Exception {
 
         mockMvc.perform(get("/roles/by-membership")
-                        .queryParam("teamId","062de4c6-08e2-40da-84f3-ac4d9296889d")
-                        .queryParam("userId","7c7bebbf-221e-4c6d-9405-577d9a730bfc")
+                        .queryParam("teamId", "062de4c6-08e2-40da-84f3-ac4d9296889d")
+                        .queryParam("userId", "7c7bebbf-221e-4c6d-9405-577d9a730bfc")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -313,8 +305,8 @@ public class RoleControllerTest {
     public void findByMembership_userNotFound() throws Exception {
 
         mockMvc.perform(get("/roles/by-membership")
-                        .queryParam("teamId","062de4c6-08e2-40da-84f3-ac4d9296889e")
-                        .queryParam("userId","7c7bebbf-221e-4c6d-9405-577d9a730bfc")
+                        .queryParam("teamId", "062de4c6-08e2-40da-84f3-ac4d9296889e")
+                        .queryParam("userId", "7c7bebbf-221e-4c6d-9405-577d9a730bfc")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -329,8 +321,8 @@ public class RoleControllerTest {
     @Test
     public void findByMembership_userNotMemberOfGroup() throws Exception {
         mockMvc.perform(get("/roles/by-membership")
-                        .queryParam("teamId","062de4c6-08e2-40da-84f3-ac4d9296889e")
-                        .queryParam("userId","586d6841-5ba6-47c3-91e4-8165f119f218")
+                        .queryParam("teamId", "062de4c6-08e2-40da-84f3-ac4d9296889e")
+                        .queryParam("userId", "586d6841-5ba6-47c3-91e4-8165f119f218")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -367,8 +359,9 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$.message", equalTo("Unable to find role with id 'e870f742-2627-426e-8287-5bbf391ea9e8'.")))
                 .andExpect(jsonPath("$.path", equalTo("/roles/e870f742-2627-426e-8287-5bbf391ea9e8/memberships")))
                 .andExpect(jsonPath("$.status", equalTo("NOT_FOUND")))
-                ;
+        ;
     }
+
     @Test
     public void getMemberships_noResults() throws Exception {
         mockMvc.perform(get("/roles/d5ddba22-54b9-4a16-acfd-84c1f5370567/memberships")
@@ -378,6 +371,7 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$.content.[*]", hasSize(0)))
         ;
     }
+
     @Test
     public void getMemberships() throws Exception {
         mockMvc.perform(get("/roles/e870f742-2627-426e-8287-5bbf391ea9e9/memberships")
@@ -394,6 +388,86 @@ public class RoleControllerTest {
                         "8311db28-662d-4e39-967e-3512e8ece4a8")))
         ;
 
+    }
+
+    @Test
+    public void deleteRole_notFound() throws Exception {
+
+        mockMvc.perform(delete("/roles/e870f742-2627-426e-8287-5bbf391ea9e8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.time", notNullValue()))
+                .andExpect(jsonPath("$.message", equalTo("Unable to find role with id 'e870f742-2627-426e-8287-5bbf391ea9e8'.")))
+                .andExpect(jsonPath("$.path", equalTo("/roles/e870f742-2627-426e-8287-5bbf391ea9e8")))
+                .andExpect(jsonPath("$.status", equalTo("NOT_FOUND")))
+        ;
+    }
+
+    @Test
+    public void deleteRole_defaultRole() throws Exception {
+        mockMvc.perform(delete("/roles/e870f742-2627-426e-8287-5bbf391ea9e9")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.time", notNullValue()))
+                .andExpect(jsonPath("$.message", equalTo("It is not possible to delete the default role.")))
+                .andExpect(jsonPath("$.path", equalTo("/roles/e870f742-2627-426e-8287-5bbf391ea9e9")))
+                .andExpect(jsonPath("$.status", equalTo("BAD_REQUEST")))
+        ;
+    }
+
+    @Test
+    @Sql(statements = "update role set is_default = false where is_default = true")
+    public void deleteRole_noDefaultRole() throws Exception {
+        mockMvc.perform(delete("/roles/11e30283-a92a-42fb-add8-b6c9eaf85e29")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.time", notNullValue()))
+                .andExpect(jsonPath("$.message", equalTo("Unable to find default role.")))
+                .andExpect(jsonPath("$.path", equalTo("/roles/11e30283-a92a-42fb-add8-b6c9eaf85e29")))
+                .andExpect(jsonPath("$.status", equalTo("NOT_FOUND")))
+        ;
+    }
+
+    @Test
+    @Sql(statements = "update role set is_default = true where id = 'd5ddba22-54b9-4a16-acfd-84c1f5370567'")
+    public void deleteRole_moreThanOneDefaultRole() throws Exception {
+        mockMvc.perform(delete("/roles/11e30283-a92a-42fb-add8-b6c9eaf85e29")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.time", notNullValue()))
+                .andExpect(jsonPath("$.message", equalTo("More than one default role found.")))
+                .andExpect(jsonPath("$.path", equalTo("/roles/11e30283-a92a-42fb-add8-b6c9eaf85e29")))
+                .andExpect(jsonPath("$.status", equalTo("BAD_REQUEST")))
+        ;
+    }
+
+    @Test
+    public void deleteRole() throws Exception {
+        mockMvc.perform(delete("/roles/11e30283-a92a-42fb-add8-b6c9eaf85e29")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/roles/by-membership")
+                        .queryParam("teamId", "062de4c6-08e2-40da-84f3-ac4d9296889e")
+                        .queryParam("userId", "8311db28-662d-4e39-967e-3512e8ece4a8")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo("e870f742-2627-426e-8287-5bbf391ea9e9")))
+                .andExpect(jsonPath("$.name", equalTo("Developer")))
+
+                ;
     }
 
 }
